@@ -1,0 +1,31 @@
+[project]
+name = "termoscart"
+version = "0.1.0"
+description = "Terminal Oscilloscope Art - Bringing beautiful, animated curves to the command line"
+authors = [{name = "Kevin Golob", email = "151143873+kvnglb@users.noreply.github.com"}]
+readme = "README.md"
+license = "GPL-3.0-only"
+homepage = "https://github.com/kvnglb/termoscart"
+repository = "https://github.com/kvnglb/termoscart"
+packages = [{include = "termoscart", from = "src"}]
+requires-python = ">=3.8.1"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3 :: Only",
+]
+
+[project.scripts]
+termoscart = "termoscart.__main__:main"
+
+[tool.poetry.group.dev.dependencies]
+spyder-kernels = "~2.5"
+mypy = "^1.11.2"
+flake8 = "^7.1.1"
+ruff = "^0.6.8"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
