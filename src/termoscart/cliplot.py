@@ -1,7 +1,7 @@
 import os
 import sys
 import typing as t
-from multiprocessing import Process
+from argparse import Namespace
 from multiprocessing.connection import Connection
 
 COLORS = {None: 0,
@@ -24,17 +24,15 @@ COLORS = {None: 0,
 
 
 class CliPlot:
-    def __init__(self, rect_ratio: float, fgc: str, bgc: str, s: str) -> None:
-        self.rect_ratio = rect_ratio
-        self.s = s
-        self._colorize(fgc, bgc)
+    def __init__(self, args: Namespace) -> None:
+        self.rect_ratio = args.rect_ratio
+        self.s = args.s
+        self._colorize(args.fgc, args.bgc)
 
         size = os.get_terminal_size()
         self.columns = size.columns
         self.lines = size.lines - 1
         self.scale()
-        self.x = lambda x: round((self.w-1) / 2 * (x + 1))
-        self.y = lambda y: round((self.h-1) / 2 * (1 - y))
         self.paint_screen()
         self.clear_matrix()
 
@@ -68,14 +66,20 @@ class CliPlot:
         sys.stdout.write(f"\033[{y};{x}H")
         sys.stdout.flush()
 
-    def scatter(self, x: t.Union[list, int], y: t.Union[list, int], s: str) -> None:
+    def x(self, x: float) -> int:
+        return round((self.w-1) / 2 * (x + 1))
+
+    def y(self, y: float) -> int:
+        return round((self.h-1) / 2 * (1 - y))
+
+    def scatter(self, x: t.Union[list, float], y: t.Union[list, float], s: str) -> None:
         if type(x) is list and type(y) is list and (leng := len(x)) == len(y):
             for i in range(leng):
                 if abs(y[i]) > 1:
                     continue
                 self.matrix[self.y(y[i])][self.x(x[i])] = s
         elif type(x) is not list and type(y) is not list:
-            self.matrix[self.y(y)][self.x(x)] = s
+            self.matrix[self.y(y)][self.x(x)] = s  # type: ignore[arg-type]
 
         elif type(x) is list and type(y) is list and len(x) != len(y):
             raise Exception("Lengths must be the same.")
@@ -91,11 +95,8 @@ class CliPlot:
         sys.stdout.flush()
 
     def animate(self, p: Connection) -> None:
-        def loop(p: Connection) -> None:
-            while True:
-                recv = p.recv()  # type: tuple[t.Union[list, int], t.Union[list, int]]
-                self.clear_matrix()
-                self.scatter(*recv, self.s)
-                self.show()
-        self.proc = Process(target=loop, args=(p,), daemon=True)
-        self.proc.start()
+        while True:
+            recv = p.recv()  # type: tuple[t.Union[list, int], t.Union[list, int]]
+            self.clear_matrix()
+            self.scatter(*recv, self.s)
+            self.show()
