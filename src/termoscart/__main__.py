@@ -2,7 +2,8 @@ import argparse
 import time
 from multiprocessing import Pipe, Process
 
-import termoscart as toa
+from .cliplot import CliPlot
+from .f import F
 
 
 def main() -> None:
@@ -15,17 +16,17 @@ def main() -> None:
     parser.add_argument("-b", "--background-color", dest="bgc", type=str, default=None, help="Background color.")
     subparser = parser.add_subparsers(dest="curve")
 
-    F = toa.F(subparser)
+    func = F(subparser)
     args = parser.parse_args()
 
-    plt = toa.CliPlot(args)
+    plt = CliPlot(args)
 
     p1, p2 = Pipe(False)
     proc = Process(target=plt.animate, args=(p1,), daemon=True)
     proc.start()
 
     try:
-        N, T, f = args.N, args.T, F(args)
+        N, T, f = args.N, args.T, func(args)
         w = -N
         while True:
             c_time = time.time_ns()
