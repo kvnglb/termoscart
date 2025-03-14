@@ -20,6 +20,10 @@ class Subparser:
         parser.add_argument("-a", type=float, default=2)
         parser.add_argument("-b", type=float, default=3)
 
+    def lissajous2(self) -> None:
+        parser = self._subparser.add_parser("lissajous2")
+        parser.add_argument("-n", type=float, default=1)
+
 
 class F:
     def __init__(self, subparser: _SubParsersAction) -> None:
@@ -37,10 +41,15 @@ class F:
             return getattr(self, self.args.curve)
 
     def sine(self, w: int) -> tuple[list[float], list[float]]:
-        y = [self.args.A * math.sin(self.args.a * math.pi * (x + w)) for x in self.x]
+        y = [self.args.A * math.sin(self.args.a*(x+w) * math.pi) for x in self.x]
         return self.x, y
 
     def lissajous(self, w: int) -> tuple[list[float], list[float]]:
-        x = [math.sin(math.pi * self.args.a*x) for x in self.x]
-        y = [math.sin(math.pi * (self.args.b*x + w)) for x in self.x]
+        x = [math.sin((self.args.a*x + w) * math.pi) for x in self.x]
+        y = [math.sin(self.args.b * x * math.pi) for x in self.x]
+        return x, y
+
+    def lissajous2(self, w: int) -> tuple[list[float], list[float]]:
+        x = [math.sin((w+1)*self.args.n * x * math.pi) for x in self.x]
+        y = [math.sin(2*self.args.n * x * math.pi) for x in self.x]
         return x, y
