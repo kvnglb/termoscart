@@ -14,6 +14,8 @@ def main() -> None:
     parser.add_argument("-s", "--symbol", dest="s", type=str, default=".", help="Symbol")
     parser.add_argument("-f", "--foreground-color", dest="fgc", type=str, default=None, help="Foreground color.")
     parser.add_argument("-b", "--background-color", dest="bgc", type=str, default=None, help="Background color.")
+    parser.add_argument("-g", "--grid", action="store_true", help="Enable grid")
+    parser.add_argument("-c", "--grid-color", dest="gc", type=str, help="Color of the grid")
     subparser = parser.add_subparsers(dest="curve")
 
     func = F(subparser)
@@ -22,7 +24,11 @@ def main() -> None:
     plt = CliPlot(args)
 
     p1, p2 = Pipe(False)
-    proc = Process(target=plt.animate, args=(p1,), daemon=True)
+    if args.grid:
+        p = plt.animate_with_grid
+    else:
+        p = plt.animate
+    proc = Process(target=p, args=(p1,), daemon=True)
     proc.start()
 
     try:
@@ -42,7 +48,7 @@ def main() -> None:
         proc.kill()
         while proc.is_alive():
             time.sleep(0.1)
-        plt._colorize()
+        plt.colorize(reset=True)
         plt.paint_screen()
 
 
