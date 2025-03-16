@@ -26,10 +26,10 @@ COLORS = {None: 0,
 class CliPlot:
     def __init__(self, args: Namespace) -> None:
         self.rect_ratio = args.rect_ratio
-        self.s = args.s
-        self.fgc = args.fgc
-        self.bgc = args.bgc
-        self.gc = args.gc
+        self.symbol = args.symbol
+        self.line_color = args.line_color
+        self.background_color = args.background_color
+        self.grid_color = args.grid_color
 
         size = os.get_terminal_size()
         self.columns = size.columns
@@ -45,19 +45,19 @@ class CliPlot:
 
         c = []
         write = False
-        if self.fgc:
-            c.append(str(COLORS[self.fgc]))
+        if self.line_color:
+            c.append(str(COLORS[self.line_color]))
             write = True
-        if self.bgc:
-            c.append(str(COLORS[self.bgc]+10))
+        if self.background_color:
+            c.append(str(COLORS[self.background_color]+10))
             write = True
         if write:
             sys.stdout.write("\033[{}m".format(";".join(c)))
 
-        if not self.gc:
+        if not self.grid_color:
             self.grid_symbol = "+"
         else:
-            self.grid_symbol = "\033[{}m{}\033[{}m".format(COLORS[self.gc], "+", COLORS[self.fgc])
+            self.grid_symbol = "\033[{}m{}\033[{}m".format(COLORS[self.grid_color], "+", COLORS[self.line_color])
 
     def paint_screen(self) -> None:
         matrix = [[" " for _ in range(self.columns)] for _ in range(int(self.lines))]
@@ -104,9 +104,9 @@ class CliPlot:
             for i in range(leng):
                 if abs(y[i]) > 1:
                     continue
-                self.matrix[self.y(y[i])][self.x(x[i])] = self.s
+                self.matrix[self.y(y[i])][self.x(x[i])] = self.symbol
         elif type(x) is not list and type(y) is not list:
-            self.matrix[self.y(y)][self.x(x)] = self.s  # type: ignore[arg-type]
+            self.matrix[self.y(y)][self.x(x)] = self.symbol  # type: ignore[arg-type]
 
         elif type(x) is list and type(y) is list and len(x) != len(y):
             raise Exception("Lengths must be the same.")

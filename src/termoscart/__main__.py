@@ -8,14 +8,14 @@ from .f import F
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("-T", "--period", dest="T", type=float, default=3, help="T=1/f, the time, until the figure has finished 1 cycle.")
-    parser.add_argument("-N", "--resolution", dest="N", type=int, default=100, help="The delta between two points.")
-    parser.add_argument("-r", "--rect-ratio", type=float, default=1/2, help="Width/Height")
-    parser.add_argument("-s", "--symbol", dest="s", type=str, default=".", help="Symbol")
-    parser.add_argument("-f", "--foreground-color", dest="fgc", type=str, default=None, help="Foreground color.")
-    parser.add_argument("-b", "--background-color", dest="bgc", type=str, default=None, help="Background color.")
-    parser.add_argument("-g", "--grid", action="store_true", help="Enable grid")
-    parser.add_argument("-c", "--grid-color", dest="gc", type=str, help="Color of the grid")
+    parser.add_argument("-P", "--period", metavar="<seconds>", type=float, default=3, help="time in seconds, until the figure finishes 1 cycle (f=1/T) (default: %(default)s)")
+    parser.add_argument("-R", "--resolution", metavar="<res>", type=int, default=100, help="delta between two points (default: %(default)s)")
+    parser.add_argument("-r", "--rect-ratio", metavar="<width/height>", type=float, default=0.5, help="ratio of width/height (depending on the font, needed that a circle appears like a circle and not like an ellipse) (default: %(default)s)")
+    parser.add_argument("-s", "--symbol", metavar="<char>", type=str, default="#", help="symbol for the curve (default: '%(default)s')")
+    parser.add_argument("-l", "--line-color", metavar="<color>", type=str, default=None, help="color of the curve (default: %(default)s)")
+    parser.add_argument("-b", "--background-color", metavar="<color>", type=str, default=None, help="color of the background (default: %(default)s)")
+    parser.add_argument("-g", "--grid", action="store_true", help="enables grid (default: %(default)s)")
+    parser.add_argument("-G", "--grid-color", metavar="<color>", type=str, help="color of the grid (default: %(default)s)")
     subparser = parser.add_subparsers(dest="curve")
 
     func = F(subparser)
@@ -24,7 +24,7 @@ def main() -> None:
     plt = CliPlot(args)
 
     p1, p2 = Pipe(False)
-    if args.grid:
+    if args.grid or args.grid_color:
         p = plt.animate_with_grid
     else:
         p = plt.animate
@@ -32,16 +32,16 @@ def main() -> None:
     proc.start()
 
     try:
-        N, T, f = args.N, args.T, func(args)
-        w = -N
+        P, R, f = args.period, args.resolution, func(args)
+        w = -R
         while True:
             c_time = time.time_ns()
-            p2.send(f(w/N))
-            if w == N-1:
-                w = -N
+            p2.send(f(w/R))
+            if w == R-1:
+                w = -R
             else:
                 w += 1
-            while time.time_ns() <= c_time + (T/2/N*1e9):
+            while time.time_ns() <= c_time + (P/2/R*1e9):
                 time.sleep(1e-6)
 
     except KeyboardInterrupt:
