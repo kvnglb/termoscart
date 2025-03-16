@@ -4,23 +4,23 @@ import typing as t
 from argparse import Namespace
 from multiprocessing.connection import Connection
 
-COLORS = {None: 0,
-          "black": 30,
-          "red": 31,
-          "green": 32,
-          "yellow": 33,
-          "blue": 34,
-          "magenta": 35,
-          "cyan": 36,
-          "white": 37,
-          "bright-black": 90,
-          "bright-red": 91,
-          "bright-green": 92,
-          "bright-yellow": 93,
-          "bright-blue": 94,
-          "bright-magenta": 95,
-          "bright-cyan": 96,
-          "bright-white": 97}
+COLOR = {None: 0,
+         "black": 30,
+         "red": 31,
+         "green": 32,
+         "yellow": 33,
+         "blue": 34,
+         "magenta": 35,
+         "cyan": 36,
+         "white": 37,
+         "bright-black": 90,
+         "bright-red": 91,
+         "bright-green": 92,
+         "bright-yellow": 93,
+         "bright-blue": 94,
+         "bright-magenta": 95,
+         "bright-cyan": 96,
+         "bright-white": 97}
 
 
 class CliPlot:
@@ -46,10 +46,10 @@ class CliPlot:
         c = []
         write = False
         if self.line_color:
-            c.append(str(COLORS[self.line_color]))
+            c.append(str(COLOR[self.line_color]))
             write = True
         if self.background_color:
-            c.append(str(COLORS[self.background_color]+10))
+            c.append(str(COLOR[self.background_color]+10))
             write = True
         if write:
             sys.stdout.write("\033[{}m".format(";".join(c)))
@@ -57,7 +57,7 @@ class CliPlot:
         if not self.grid_color:
             self.grid_symbol = "+"
         else:
-            self.grid_symbol = "\033[{}m{}\033[{}m".format(COLORS[self.grid_color], "+", COLORS[self.line_color])
+            self.grid_symbol = "\033[{}m{}\033[{}m".format(COLOR[self.grid_color], "+", COLOR[self.line_color])
 
     def paint_screen(self) -> None:
         matrix = [[" " for _ in range(self.columns)] for _ in range(int(self.lines))]

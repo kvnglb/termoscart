@@ -56,7 +56,7 @@ class F:
         return x, self.y
 
     def lissajous2_const(self):
-        self.y = [math.sin(self.args.b * x * math.pi) for x in self.x]
+        self.lissajous_const()
 
     def lissajous2(self, w: int) -> tuple[list[float], list[float]]:
         x = [math.sin(self.args.n/2*(w+1)*self.args.b * x * math.pi) for x in self.x]
