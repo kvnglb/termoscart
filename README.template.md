@@ -1,7 +1,7 @@
 # termoscart
 A CLI tool to draw beautiful (animated) curves in the terminal.
 
-![termoscar](https://raw.githubusercontent.com/kvnglb/termoscart/refs/heads/dev/images/termoscart.png)
+![termoscart](https://raw.githubusercontent.com/kvnglb/termoscart/refs/heads/main/images/termoscart.png)
 
 Created with
 ```
