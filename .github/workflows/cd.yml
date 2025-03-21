@@ -3,24 +3,13 @@ name: Publish
 on:
   workflow_dispatch:
   push:
-    branches:
-      - 'main'
-    paths:
-      - 'pyproject.toml'
+    tags:
+      - '**'
 
 permissions:
   contents: read
 
 jobs:
-  ci:
-    uses: ./.github/workflows/ci.yml
-
-  bot:
-    needs: ci
-    permissions:
-      contents: write
-    uses: ./.github/workflows/bot.yml
-
   pypi-publish:
     needs: bot
     permissions:
