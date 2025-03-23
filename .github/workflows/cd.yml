@@ -17,7 +17,6 @@ jobs:
 
   bot:
     needs: ci
-    continue-on-error: true
     permissions:
       contents: write
     uses: ./.github/workflows/bot.yml
