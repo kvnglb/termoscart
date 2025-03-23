@@ -5,8 +5,6 @@ description = "Terminal Oscilloscope Art - Bringing beautiful, animated curves t
 authors = [{name = "Kevin Golob", email = "151143873+kvnglb@users.noreply.github.com"}]
 readme = "README.md"
 license = "GPL-3.0-only"
-homepage = "https://github.com/kvnglb/termoscart"
-repository = "https://github.com/kvnglb/termoscart"
 packages = [{include = "termoscart", from = "src"}]
 requires-python = ">=3.8.1"
 classifiers = [
@@ -18,6 +16,10 @@ classifiers = [
     "Topic :: Games/Entertainment :: Simulation",
     "Topic :: Scientific/Engineering :: Visualization"
 ]
+
+[project.urls]
+homepage = "https://github.com/kvnglb/termoscart"
+repository = "https://github.com/kvnglb/termoscart"
 
 [project.scripts]
 termoscart = "termoscart.__main__:main"
